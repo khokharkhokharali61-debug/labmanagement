@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library Management System - C++ OOP Project Presentation</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+body{background:#f4f7fc;font-family:Segoe UI,sans-serif;}
+.sidebar{width:250px;height:100vh;position:fixed;background:#0d1b52;color:white;padding:20px;}
+.sidebar h3{text-align:center;margin-bottom:30px;}
+.sidebar a{display:block;color:white;text-decoration:none;padding:12px;border-radius:8px;margin-bottom:10px;}
+.sidebar a:hover{background:#1f3aa0;}
+.main{margin-left:270px;padding:20px;}
+.card{border:none;border-radius:15px;transition:.3s;}
+.card:hover{transform:translateY(-5px);}
+.login-container{height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#0d1b52,#2f56ff);}
+.login-card{width:400px;background:white;padding:30px;border-radius:20px;}
+.hidden{display:none;}
+footer{margin-top:30px;text-align:center;color:#666;}
+</style>
+</head>
+<body>
+<div id="loginPage" class="login-container">
+<div class="login-card shadow">
+<h2 class="text-center mb-4">Library Login</h2>
+<input id="username" class="form-control mb-3" placeholder="Username">
+<div class="input-group mb-3">
+<input type="password" id="password" class="form-control" placeholder="Password">
+<button class="btn btn-outline-secondary" onclick="togglePassword()"><i class="fa fa-eye"></i></button>
+</div>
+<button class="btn btn-primary w-100" onclick="login()">Login</button>
+<p class="mt-3 text-center">Username: admin<br>Password: admin123</p>
+</div>
+</div>
+
+<div id="dashboardPage" class="hidden">
+<div class="sidebar">
+<h3>Library LMS</h3>
+<a href="#">Dashboard</a>
+<a href="#">Books</a>
+<button class="btn btn-danger w-100" onclick="logout()">Logout</button>
+</div>
+
+<div class="main">
+<h2>Library Management System - C++ OOP Project Presentation</h2>
+<div class="card shadow p-3 mt-3">
+<h4>Add Book</h4>
+<input id="bookTitle" class="form-control mb-2" placeholder="Book Title">
+<input id="bookAuthor" class="form-control mb-2" placeholder="Author">
+<input id="bookQty" type="number" class="form-control mb-2" placeholder="Quantity">
+<button class="btn btn-success" onclick="addBook()">Add Book</button>
+</div>
+
+<div class="card shadow p-3 mt-3">
+<input id="searchBook" class="form-control mb-2" placeholder="Search Book" onkeyup="renderBooks()">
+<table class="table">
+<thead><tr><th>Title</th><th>Author</th><th>Qty</th><th>Action</th></tr></thead>
+<tbody id="bookTable"></tbody>
+</table>
+</div>
+<footer>Developed by Mazhar Iqbal</footer>
+</div>
+</div>
+
+<script>
+let books = JSON.parse(localStorage.getItem("books")) || [
+{title:"Object Oriented Programming",author:"John",qty:10},
+{title:"Data Structures",author:"Mark",qty:8}
+];
+
+function login(){
+if(username.value==="admin" && password.value==="admin123"){
+loginPage.classList.add("hidden");
+dashboardPage.classList.remove("hidden");
+renderBooks();
+}else alert("Invalid Login");
+}
+function logout(){location.reload();}
+function togglePassword(){password.type=password.type==="password"?"text":"password";}
+function saveBooks(){localStorage.setItem("books",JSON.stringify(books));}
+function addBook(){
+books.push({title:bookTitle.value,author:bookAuthor.value,qty:bookQty.value});
+saveBooks(); renderBooks();
+}
+function deleteBook(i){books.splice(i,1);saveBooks();renderBooks();}
+function renderBooks(){
+let s=searchBook.value.toLowerCase(); let html="";
+books.forEach((b,i)=>{
+if(b.title.toLowerCase().includes(s)){
+html+=`<tr><td>${b.title}</td><td>${b.author}</td><td>${b.qty}</td><td><button class="btn btn-danger btn-sm" onclick="deleteBook(${i})">Delete</button></td></tr>`;
+}});
+bookTable.innerHTML=html;
+}
+</script>
+</body>
+</html>
